@@ -3,8 +3,9 @@ const path = require('path');
 
 async function main() {
   // 查找的文件夹
-  const dir = 'G:\\Users\\Administrator\\Desktop\\新建文件夹';
-  const files = await fsp.readdir(dir);
+  const dir = 'D:\\OneDrive\\Box\\学习\\极客时间';
+  const files = await getFiles(dir);
+
   files.forEach(async (file) => {
     let fileInfo = path.parse(file);
     let newFileName = fileInfo.name.replace(
@@ -12,13 +13,27 @@ async function main() {
       ''
     );
     newFileName = newFileName.trimEnd();
-    const oldFilePath = path.join(dir, file);
-    const newFilePath = path.join(dir, newFileName + fileInfo.ext);
-    if (oldFilePath !== newFilePath) {
-      await fsp.rename(oldFilePath, newFilePath);
+    const newFilePath = path.join(fileInfo.dir, newFileName + fileInfo.ext);
+    if (file !== newFilePath) {
+      // await fsp.rename(oldFilePath, newFilePath);
       console.log(`${file} -> ${newFilePath} done`);
     }
   });
+}
+
+/** 查找文件，包括子目录 */
+async function getFiles(dir) {
+  const dirents = await fsp.readdir(dir, { withFileTypes: true });
+  let fileList = [];
+  for (const dirent of dirents) {
+    if (dirent.isDirectory()) {
+      fileList = fileList.concat(await getFiles(path.join(dir, dirent.name)));
+    } else { 
+      fileList.push(path.join(dir, dirent.name));
+    }
+  }
+
+  return fileList;
 }
 
 main().then(() => {
