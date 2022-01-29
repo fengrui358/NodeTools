@@ -3,7 +3,7 @@ const path = require('path');
 
 async function main() {
   // 查找的文件夹
-  const dir = 'D:\\OneDrive\\Box\\学习\\极客时间';
+  const dir = 'E:\\OneDrive\\Box\\学习\\极客时间\\微信小程序全栈开发实战课';
   const files = await getFiles(dir);
 
   files.forEach(async (file) => {
@@ -15,7 +15,7 @@ async function main() {
     newFileName = newFileName.trimEnd();
     const newFilePath = path.join(fileInfo.dir, newFileName + fileInfo.ext);
     if (file !== newFilePath) {
-      // await fsp.rename(oldFilePath, newFilePath);
+      // await fsp.rename(file, newFilePath);
       console.log(`${file} -> ${newFilePath} done`);
     }
   });
